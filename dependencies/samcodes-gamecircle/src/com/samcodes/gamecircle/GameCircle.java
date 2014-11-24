@@ -214,7 +214,7 @@ public class GameCircle extends Extension {
 	public static void updateAchievement(final String achievementId, final float percentComplete, final String developerPayload) {
 		callbackHandler.post(new Runnable() {
 			public void run() {
-				Log.v(tag, "GameCircle unlockAchievement " + achievementId);
+				Log.v(tag, "GameCircle updateAchievement " + achievementId);
 
 				if (AmazonGamesClient.getInstance() != null) {
 					AmazonGamesClient.getInstance().getAchievementsClient().updateProgress(achievementId, percentComplete, developerPayload);
