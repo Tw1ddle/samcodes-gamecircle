@@ -185,6 +185,18 @@ public class GameCircle extends Extension {
 			}
 		});
 	}
+	
+	public static void showSignInPage() {
+		callbackHandler.post(new Runnable() {
+			public void run() {
+				Log.v(tag, "GameCircle showSignInPage");
+
+				if (AmazonGamesClient.getInstance() != null) {
+					AmazonGamesClient.getInstance().showSignInPage();
+				}
+			}
+		});
+	}
 
 	public static void submitScore(final String leaderboardId, final long score, final String developerPayload) {
 		callbackHandler.post(new Runnable() {

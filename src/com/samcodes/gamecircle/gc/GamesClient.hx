@@ -40,6 +40,11 @@ class GamesClientImpl
   {
 	  _showLeaderboards();
   }
+  
+  public function showSignInPage()
+  {
+	  _showSignInPage();
+  }
 
   private static function initJNI()
   {
@@ -78,6 +83,12 @@ class GamesClientImpl
       _showLeaderboards = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle",
           "showLeaderboards", "()V");
     }
+	
+	if (_showSignInPage == null) 
+	{
+	  _showSignInPage = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle",
+          "showSignInPage", "()V");
+	}
   }
 
   private static var _isSignedIn : Dynamic = null;
@@ -86,6 +97,7 @@ class GamesClientImpl
   private static var _submitScore : Dynamic = null;
   private static var _showLeaderboard : Dynamic = null;
   private static var _showLeaderboards : Dynamic = null;
+  private static var _showSignInPage : Dynamic = null;
 }
 
 typedef GamesClient = GamesClientImpl;
