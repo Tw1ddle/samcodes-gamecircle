@@ -16,9 +16,9 @@ class GamesClientImpl
     return _isSignedIn();
   }
 
-  public function updateAchievement(achievementId : String)
+  public function updateAchievement(achievementId : String, percentComplete : Float, developerPayload : String)
   {
-    _updateAchievement(achievementId);
+    _updateAchievement(achievementId, percentComplete, developerPayload);
   }
 
   public function showAchievements()
@@ -26,9 +26,9 @@ class GamesClientImpl
     _showAchievements();
   }
 
-  public function submitScore(leaderboardId : String, score : Int)
+  public function submitScore(leaderboardId : String, score : Int, developerPayload : String)
   {
-    _submitScore(leaderboardId, score);
+    _submitScore(leaderboardId, score, developerPayload);
   }
 
   public function showLeaderboard(leaderboardId : String)
@@ -57,7 +57,7 @@ class GamesClientImpl
     if(_updateAchievement == null)
     {
       _updateAchievement = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle",
-          "updateAchievement", "(Ljava/lang/String;F;Ljava/lang/String)V");
+          "updateAchievement", "(Ljava/lang/String;FLjava/lang/String;)V");
     }
 
     if(_showAchievements == null)
@@ -69,7 +69,7 @@ class GamesClientImpl
     if(_submitScore == null)
     {
       _submitScore = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle",
-          "submitScore", "(Ljava/lang/String;J;Ljava/lang/String;)V");
+          "submitScore", "(Ljava/lang/String;JLjava/lang/String;)V");
     }
 
     if(_showLeaderboard == null)
