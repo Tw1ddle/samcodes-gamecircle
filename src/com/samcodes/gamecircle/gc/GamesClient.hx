@@ -119,7 +119,7 @@ class GamesClientFallback
   }
   public function updateAchievement(achievementId : String, steps : Int)
   {
-    trace(["Not implemented", "incrementAchievement", achievementId, steps]);
+    trace(["Not implemented", "updateAchievement", achievementId, steps]);
   }
   public function showAchievements()
   {
