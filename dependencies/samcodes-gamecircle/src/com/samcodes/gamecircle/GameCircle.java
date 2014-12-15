@@ -210,11 +210,9 @@ public class GameCircle extends Extension {
 								public void onComplete(SubmitScoreResponse result) {
 									if (result.isError()) {
 										// Add optional error handling here. Not required since re-tries and on-device request caching are automatic
-										// Add optional error handling here. Not required since re-tries and on-device request caching are automatic
 										Log.v(tag, "GameCircle ERROR: " + result.getError());
 									} else {
 										Log.v(tag, "GameCircle OK");
-										// Continue game flow
 									}
 								}
 							});
