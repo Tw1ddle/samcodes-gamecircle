@@ -1,6 +1,6 @@
 HaxeGameCircle
 ==============
-Amazon GameCircle 2.x leaderboards and achievements support for OpenFL.
+Amazon GameCircle 2.x leaderboards and achievements support for OpenFL Android target.
 
 Supports:
 * GameCircle sign-in.
@@ -8,8 +8,9 @@ Supports:
 * Submitting leaderboard/achievement scores and progress.
 
 Doesn't support:
+* iOS target.
 * Fetching leaderboard/achievement stats from the server.
-* Cloud syncing or Whispersync.
+* Whispersync.
 
 ### Usage ###
 
