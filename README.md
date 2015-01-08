@@ -141,10 +141,8 @@ class MyGame {
   
   public function onLevelEnd() {
 		if (leaderboards.isSignedIn()) {
-		  var myScore:Float = 10;
-		  
 		  // Create your leaderboards and set their ids through the Amazon developer console
-			leaderboards.submitScore("my_leaderboard_id", myScore);
+			leaderboards.submitScore("my_leaderboard_id", 1000);
 		}
 		
 		if (leaderboards.isSignedIn()) {
