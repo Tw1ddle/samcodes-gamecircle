@@ -13,7 +13,7 @@ Doesn't support:
 * Fetching leaderboard/achievement data from the Amazon servers.
 * Whispersync.
 
-If there is something you would like adding send me an email. Pull requests welcomed too!
+If there is something you would like adding open an issue or email me. Pull requests welcomed too!
 
 ### Install ###
 
