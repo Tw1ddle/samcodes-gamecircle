@@ -1,6 +1,6 @@
 Haxe GameCircle
 ==============
-Amazon GameCircle 2.x leaderboards and achievements support for OpenFL Android target.
+Unofficial Amazon GameCircle 2.x leaderboards and achievements support for OpenFL Android target.
 
 ### Features ###
 * GameCircle sign-in.
