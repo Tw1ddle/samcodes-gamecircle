@@ -15,6 +15,12 @@ Doesn't support:
 
 If there is something you would like adding send me an email. Pull requests welcomed too!
 
+### Install ###
+
+```bash
+haxelib install samcodes-gamecircle
+```
+
 ### Usage ###
 
 Project.xml
