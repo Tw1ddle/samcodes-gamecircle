@@ -2,8 +2,6 @@ Haxe GameCircle
 ==============
 Unofficial Amazon GameCircle 2.x leaderboards and achievements support for OpenFL Android target.
 
-![Screenshot of it working](https://github.com/Tw1ddle/samcodes-gamecircle/blob/master/screenshots/screen1.png?raw=true "Screenshot")
-
 ### Features ###
 * GameCircle sign-in.
 * Showing leaderboards/achievements popover screen.
@@ -15,7 +13,9 @@ Doesn't support:
 * Fetching leaderboard/achievement data from the Amazon servers.
 * Whispersync.
 
-If there is something you would like adding open an issue or email me. Pull requests welcomed too!
+If there is something you would like adding let me know. Pull requests welcomed too! Here it is in action:
+
+![Screenshot of it working](https://github.com/Tw1ddle/samcodes-gamecircle/blob/master/screenshots/screen1.png?raw=true "Screenshot")
 
 ### Install ###
 
