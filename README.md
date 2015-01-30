@@ -28,7 +28,7 @@ haxelib install samcodes-gamecircle
 Project.xml
 
 ```xml
-<include path="lib/samcodesgamecircle/include.xml" />
+<haxelib name="samcodes-gamecircle" />
 
 <!-- GameCircle jars -->
 <java path="libs/gamecircle.jar" />
