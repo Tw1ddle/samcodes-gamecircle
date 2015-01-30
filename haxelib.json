@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["amazon","gamecircle","leaderboards","achievements","android"],
 	"description": "Amazon GameCircle achievements and leaderboards for Kindle/Android",
-	"version": "1.0.2",
-	"releasenote": "Fixed incorrect package names",
+	"version": "1.0.3",
+	"releasenote": "Updated usage instructions and readme",
 	"contributors": ["samcodes"],
 	"dependencies": {}
 }
