@@ -26,7 +26,7 @@ haxelib install samcodes-gamecircle
 Project.xml
 
 ```xml
-<include path="lib/samcodesgamecircle/include.nmml" />
+<include path="lib/samcodesgamecircle/include.xml" />
 
 <!-- GameCircle jars -->
 <java path="libs/gamecircle.jar" />
@@ -79,7 +79,7 @@ Haxe example:
 ```haxe
 // Example wrapper
 class MyGameCircleLeaderboards {
-  // Doesn't really need to be a singleton
+	// Doesn't really need to be a singleton
 	public static var get(default, never):MyGameCircleLeaderboards = new MyGameCircleLeaderboards();
 	
 	private var leaderboards:GameCircle;
@@ -117,45 +117,45 @@ class MyGameCircleLeaderboards {
 
 // Your connection handler gets called when GameCircle stuff happens in Java
 class MyGameCircleConnectionHandler extends ConnectionHandler {
-  override public function onWarning(msg:String, where:String) {
-  }
+	override public function onWarning(msg:String, where:String) {
+	}
+	
+	override public function onError(what:String, code:Int, where:String) {
+	}
 
-  override public function onError(what:String, code:Int, where:String) {
-  }
+	override public function onException(msg:String, where:String) {
+	}
 
-  override public function onException(msg:String, where:String) {
-  }
-
-  override public function onConnectionEstablished(what:String) {
-  }
-
-  override public function onSignedOut(what:String) {
-  }
+	override public function onConnectionEstablished(what:String) {
+	}
+	
+	override public function onSignedOut(what:String) {
+	}
 }
 
 // Your game code
 class MyGame {
-  public var leaderboards:MyGameCircleLeaderboards;
-  
-  public function setup():Void {
-    leaderboards = MyGameCircleLeaderboards.get;
-    
-    if (!leaderboards.isSignedIn()) {
+	public var leaderboards:MyGameCircleLeaderboards;
+	
+	public function setup():Void {
+		leaderboards = MyGameCircleLeaderboards.get;
+		
+		if (!leaderboards.isSignedIn()) {
 			leaderboards.showSignInPage();
-	  }
-  }
-  
-  public function onLevelEnd() {
-		if (leaderboards.isSignedIn()) {
-		  // Create your leaderboards and set their ids through the Amazon developer console
-			leaderboards.submitScore("my_leaderboard_id", 1000);
 		}
+	}
+	
+	public function onLevelEnd() {
+  		if (leaderboards.isSignedIn()) {
+  			// Create your leaderboards and set their ids through the Amazon developer console
+  			leaderboards.submitScore("my_leaderboard_id", 1000);
+  		}
 		
 		if (leaderboards.isSignedIn()) {
-		  // Create your achievements and set their ids through the Amazon developer console
-		  leaderboards.updateAchievementProgress("my_achievement_id", 50); // 50% complete
-		  leaderboards.updateAchievementProgress("my_other_achievement_id", 100); // Unlocks automatically at 100%
+			// Create your achievements and set their ids through the Amazon developer console
+			leaderboards.updateAchievementProgress("my_achievement_id", 50); // 50% complete
+			leaderboards.updateAchievementProgress("my_other_achievement_id", 100); // Unlocks automatically at 100%
 		}
-  }
+	}
 }
 ```
