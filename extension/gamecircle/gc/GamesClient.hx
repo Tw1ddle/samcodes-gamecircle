@@ -1,118 +1,90 @@
 package extension.gamecircle.gc;
 
-import openfl.utils.JNI;
-
 #if android
 
-class GamesClientImpl
-{
-	public function new(handler:ConnectionHandler) {
-		initJNI();
+import openfl.utils.JNI;
+
+class GamesClient {
+	public function new() {
+		initBindings();
 	}
 
 	public function isSignedIn():Bool {
-		return _isSignedIn();
+		return is_signed_in();
 	}
 
 	public function updateAchievement(achievementId : String, percentComplete : Float, developerPayload : String):Void {
-		_updateAchievement(achievementId, percentComplete, developerPayload);
+		update_achievement(achievementId, percentComplete, developerPayload);
 	}
 
 	public function showAchievements():Void {
-		_showAchievements();
+		show_achievements();
 	}
 
 	public function submitScore(leaderboardId:String, score:Int, developerPayload:String):Void {
-		_submitScore(leaderboardId, score, developerPayload);
+		submit_score(leaderboardId, score, developerPayload);
 	}
 
 	public function showLeaderboard(leaderboardId:String):Void {
-		_showLeaderboard(leaderboardId);
+		show_leaderboard(leaderboardId);
 	}
 
 	public function showLeaderboards():Void {
-		_showLeaderboards();
+		show_leaderboards();
 	}
 
 	public function showSignInPage():Void {
-		_showSignInPage();
+		show_sign_in_page();
+	}
+	
+	public function setPopUpLocation(location:PopUpLocation):Void {
+		set_popup_location(location);
 	}
 
-	private static function initJNI():Void {
-		if (_isSignedIn == null) {
-			_isSignedIn = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "isSignedIn", "()Z");
+	private static function initBindings():Void {
+		var packageName:String = "com/samcodes/gamecircle/GameCircle";
+		
+		if (is_signed_in == null) {
+			is_signed_in = openfl.utils.JNI.createStaticMethod(packageName, "isSignedIn", "()Z");
 		}
 
-		if(_updateAchievement == null) {
-		  _updateAchievement = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "updateAchievement", "(Ljava/lang/String;FLjava/lang/String;)V");
+		if(update_achievement == null) {
+			update_achievement = openfl.utils.JNI.createStaticMethod(packageName, "updateAchievement", "(Ljava/lang/String;FLjava/lang/String;)V");
 		}
 
-		if(_showAchievements == null) {
-		  _showAchievements = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "showAchievements", "()V");
+		if(show_achievements == null) {
+			show_achievements = openfl.utils.JNI.createStaticMethod(packageName, "showAchievements", "()V");
 		}
 
-		if(_submitScore == null) {
-		  _submitScore = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "submitScore", "(Ljava/lang/String;JLjava/lang/String;)V");
+		if(submit_score == null) {
+			submit_score = openfl.utils.JNI.createStaticMethod(packageName, "submitScore", "(Ljava/lang/String;JLjava/lang/String;)V");
 		}
 
-		if(_showLeaderboard == null) {
-		  _showLeaderboard = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "showLeaderboard", "(Ljava/lang/String;)V");
+		if(show_leaderboard == null) {
+			show_leaderboard = openfl.utils.JNI.createStaticMethod(packageName, "showLeaderboard", "(Ljava/lang/String;)V");
 		}
 
-		if(_showLeaderboards == null) {
-		  _showLeaderboards = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "showLeaderboards", "()V");
+		if(show_leaderboards == null) {
+			show_leaderboards = openfl.utils.JNI.createStaticMethod(packageName, "showLeaderboards", "()V");
 		}
 
-		if (_showSignInPage == null) {
-		  _showSignInPage = openfl.utils.JNI.createStaticMethod("com/samcodes/gamecircle/GameCircle", "showSignInPage", "()V");
+		if(show_sign_in_page == null) {
+			show_sign_in_page = openfl.utils.JNI.createStaticMethod(packageName, "showSignInPage", "()V");
+		}
+		
+		if(set_popup_location == null) {
+			set_popup_location = openfl.utils.JNI.createStaticMethod(packageName, "setPopUpLocation", "(Ljava/lang/String;)V");
 		}
 	}
 
-	private static var _isSignedIn : Dynamic = null;
-	private static var _updateAchievement : Dynamic = null;
-	private static var _showAchievements : Dynamic = null;
-	private static var _submitScore : Dynamic = null;
-	private static var _showLeaderboard : Dynamic = null;
-	private static var _showLeaderboards : Dynamic = null;
-	private static var _showSignInPage : Dynamic = null;
+	private static var is_signed_in: Dynamic = null;
+	private static var update_achievement: Dynamic = null;
+	private static var show_achievements: Dynamic = null;
+	private static var submit_score: Dynamic = null;
+	private static var show_leaderboard: Dynamic = null;
+	private static var show_leaderboards: Dynamic = null;
+	private static var show_sign_in_page: Dynamic = null;
+	private static var set_popup_location:Dynamic = null;
 }
 
-typedef GamesClient = GamesClientImpl;
-#else
-class GamesClientFallback
-{
-	private var _handler:ConnectionHandler;
-	private var _isSignedIn:Bool;
-
-	public function new(handler:ConnectionHandler) {
-		_handler = handler;
-		_isSignedIn = false;
-	}
-	
-	public function isSignedIn():Void {
-		return _isSignedIn;
-	}
-	
-	public function updateAchievement(achievementId:String, steps:Int):Void {
-		trace(["Not implemented", "updateAchievement", achievementId, steps]);
-	}
-	
-	public function showAchievements() {
-		trace(["Not implemented", "showAchievements"]);
-	}
-	
-	public function submitScore(leaderboardId:String, score:Int):Void {
-		trace(["Not implemented", "submitScore", leaderboardId, score]);
-	}
-	
-	public function showLeaderboard(leaderboardId:String):Void {
-		trace(["Not implemented", "showLeaderboard", leaderboardId]);
-	}
-	
-	public function showLeaderboards():Void {
-		trace(["Not implemented", "showLeaderboards"]);
-	}
-}
-
-typedef GamesClient = GamesClientFallback;
 #end

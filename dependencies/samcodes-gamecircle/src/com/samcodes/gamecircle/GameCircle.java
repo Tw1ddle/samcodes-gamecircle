@@ -25,29 +25,31 @@ import com.amazon.ags.api.leaderboards.SubmitScoreResponse;
 import com.amazon.ags.api.AGResponseCallback;
 import com.amazon.ags.api.ErrorCode;
 import com.amazon.ags.api.overlay.PopUpLocation;
+import com.amazon.ags.api.player.AGSignedInListener;
 
 import java.util.EnumSet;
 
 public class GameCircle extends Extension {
-	private static String tag = "SamcodesGameCircle";
+	private static final String tag = "SamcodesGameCircle";
 	private static HaxeObject callback = null;
 	private static AmazonGamesStatus gamesStatus = AmazonGamesStatus.INITIALIZING;
 	private AmazonGamesClient agsClient = null;
+	private static PopUpLocation preferredPopupLocation = PopUpLocation.BOTTOM_CENTER;
 
 	public GameCircle() {
-		Log.d(tag, "Construct SamcodesGameCircle");
+		Log.d(tag, "Constructed SamcodesGameCircle");
 	}
 
-	public static void start(HaxeObject haxeCallback) {
-		Log.i(tag, "Starting GameCircle service");
+	public static void setListener(HaxeObject haxeCallback) {
+		Log.i(tag, "Setting GameCircle listener");
 		callback = haxeCallback;
-		Log.i(tag, "GameCircle service started");
 	}
 
 	/**
 	 * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when the activity had been stopped, but is now again being displayed to the user.
 	 */
 	public void onStart() {
+		super.onStart();
 		Log.i(tag, "Starting SamcodesGameCircle");
 	}
 
@@ -55,12 +57,14 @@ public class GameCircle extends Extension {
 	 * Called after {@link #onStop} when the current activity is being re-displayed to the user (the user has navigated back to it).
 	 */
 	public void onRestart() {
+		super.onRestart();
 	}
 
 	/**
 	 * Called when the activity is no longer visible to the user, because another activity has been resumed and is covering this one.
 	 */
 	public void onStop() {
+		super.onStop();
 		Log.i(tag, "Stopping SamcodesGameCircle");
 	}
 
@@ -68,12 +72,18 @@ public class GameCircle extends Extension {
 	 * Called when the activity is starting.
 	 */
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 	}
 
 	/**
 	 * Perform any final cleanup before an activity is destroyed.
 	 */
 	public void onDestroy() {
+		super.onDestroy();
+		
+		if(agsClient != null) {
+			agsClient.shutdown();
+		}
 	}
 
 	/**
@@ -91,6 +101,8 @@ public class GameCircle extends Extension {
 	 * Called after {@link #onRestart}, or {@link #onPause}, for your activity to start interacting with the user.
 	 */
 	public void onResume() {
+		super.onResume();
+		
 		gamesStatus = AmazonGamesStatus.INITIALIZING;
 
 		AmazonGamesClient.initialize(this.mainActivity, new AmazonGamesCallback() {
@@ -98,66 +110,66 @@ public class GameCircle extends Extension {
 			@Override
 			public void onServiceReady(AmazonGamesClient amazonGamesClient) {
 				agsClient = amazonGamesClient;
-				agsClient.setPopUpLocation(PopUpLocation.TOP_CENTER);
+				agsClient.setPopUpLocation(preferredPopupLocation);
 				gamesStatus = AmazonGamesStatus.SERVICE_CONNECTED;
+				callHaxe("onConnectionEstablished", new Object[] {});
+				
+				amazonGamesClient.getPlayerClient().setSignedInListener(new AGSignedInListener() {
+					@Override
+					public void onSignedInStateChange(boolean isSignedIn) {
+						if(isSignedIn == true) {
+							callHaxe("onSignedIn", new Object[] {});
+						} else {
+							callHaxe("onSignedOut", new Object[] {});
+						}
+					}
+				});
 			}
 
 			@Override
 			public void onServiceNotReady(AmazonGamesStatus reason) {
 				gamesStatus = reason;
-
-				gamesClientError(reason.ordinal(), "onServiceNotReady");
+				callHaxe("onError", new Object[] { "GAMES_CLIENT", reason.ordinal(), "onServiceNotReady" });
+				Log.d(tag, "Error at onServiceNotReady with code = " + reason.ordinal());
 			}
 
 		}, EnumSet.of(AmazonGamesFeature.Achievements, AmazonGamesFeature.Leaderboards));
 	}
 
-	/**
-	 * Called when an activity you launched exits, giving you the requestCode you started it with, the resultCode it returned, and any additional data from it.
-	 */
-	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i(tag, "onActivityResult");
-		return true;
-	}
-
-	public static void handleException(Exception e, String where) {
+	public static void onException(Exception e, String where) {
 		callHaxe("onException", new Object[] { e.getMessage(), where });
 		Log.d(tag, "Exception at " + where + ": " + e.toString());
 		e.printStackTrace();
 	}
 
-	public static void gamesClientError(int code, String where) {
-		callHaxe("onError", new Object[] { "GAMES_CLIENT", code, where });
-		Log.d(tag, "Error at " + where + " with code = " + code);
-	}
-
 	public static void callHaxe(final String name, final Object[] args) {
-		if (callback != null) {
-			callbackHandler.post(new Runnable() {
-				public void run() {
-					Log.d(tag, "Calling " + name + " from java");
-					callback.call(name, args);
-				}
-			});
+		if (callback == null) {
+			Log.d(tag, "Would have called " + name + " from java but did not because no GameCircle listener was installed");
+			return;
 		}
+		
+		callbackHandler.post(new Runnable() {
+			public void run() {
+				Log.d(tag, "Calling " + name + " from java");
+				callback.call(name, args);
+			}
+		});
 	}
 
 	public static boolean isSignedIn() {
 		return gamesStatus == AmazonGamesStatus.SERVICE_CONNECTED;
 	}
 
-	public static boolean isAvailable() {
-		return true;
-	}
-
 	public static void showAchievements() {
 		callbackHandler.post(new Runnable() {
 			public void run() {
-				Log.v(tag, "GameCircle showAchievements");
-
-				if (AmazonGamesClient.getInstance() != null) {
-					AmazonGamesClient.getInstance().getAchievementsClient().showAchievementsOverlay();
+				if(AmazonGamesClient.getInstance() == null) {
+					Log.v(tag, "Not showing GameCircle achievements because AmazonGamesClient instance was null");
+					return;
 				}
+				
+				Log.v(tag, "GameCircle showAchievements");
+				AmazonGamesClient.getInstance().getAchievementsClient().showAchievementsOverlay();
 			}
 		});
 	}
@@ -165,11 +177,13 @@ public class GameCircle extends Extension {
 	public static void showLeaderboard(final String leaderboardId) {
 		callbackHandler.post(new Runnable() {
 			public void run() {
-				Log.v(tag, "GameCircle showLeaderboard " + leaderboardId);
-
-				if (AmazonGamesClient.getInstance() != null) {
-					AmazonGamesClient.getInstance().getLeaderboardsClient().showLeaderboardOverlay(leaderboardId);
+				if(AmazonGamesClient.getInstance() == null) {
+					Log.v(tag, "Not showing GameCircle leaderboard because AmazonGamesClient instance was null");
+					return;
 				}
+				
+				Log.v(tag, "GameCircle showLeaderboard " + leaderboardId);
+				AmazonGamesClient.getInstance().getLeaderboardsClient().showLeaderboardOverlay(leaderboardId);
 			}
 		});
 	}
@@ -177,11 +191,13 @@ public class GameCircle extends Extension {
 	public static void showLeaderboards() {
 		callbackHandler.post(new Runnable() {
 			public void run() {
-				Log.v(tag, "GameCircle showLeaderboards");
-
-				if (AmazonGamesClient.getInstance() != null) {
-					AmazonGamesClient.getInstance().getLeaderboardsClient().showLeaderboardsOverlay();
+				if(AmazonGamesClient.getInstance() == null) {
+					Log.v(tag, "Not showing GameCircle leaderboards because AmazonGamesClient instance was null");
+					return;
 				}
+				
+				Log.v(tag, "GameCircle showLeaderboards");
+				AmazonGamesClient.getInstance().getLeaderboardsClient().showLeaderboardsOverlay();
 			}
 		});
 	}
@@ -189,11 +205,13 @@ public class GameCircle extends Extension {
 	public static void showSignInPage() {
 		callbackHandler.post(new Runnable() {
 			public void run() {
-				Log.v(tag, "GameCircle showSignInPage");
-
-				if (AmazonGamesClient.getInstance() != null) {
-					AmazonGamesClient.getInstance().showSignInPage();
+				if(AmazonGamesClient.getInstance() == null) {
+					Log.v(tag, "Not showing GameCircle signin page because AmazonGamesClient instance was null");
+					return;
 				}
+				
+				Log.v(tag, "GameCircle showSignInPage");
+				AmazonGamesClient.getInstance().showSignInPage();
 			}
 		});
 	}
@@ -201,22 +219,23 @@ public class GameCircle extends Extension {
 	public static void submitScore(final String leaderboardId, final long score, final String developerPayload) {
 		callbackHandler.post(new Runnable() {
 			public void run() {
-				Log.v(tag, "GameCircle submitScore " + leaderboardId + ' ' + score);
-
-				if (AmazonGamesClient.getInstance() != null) {
-					AmazonGamesClient.getInstance().getLeaderboardsClient().submitScore(leaderboardId, score, developerPayload)
-							.setCallback(new AGResponseCallback<SubmitScoreResponse>() {
-								@Override
-								public void onComplete(SubmitScoreResponse result) {
-									if (result.isError()) {
-										// Add optional error handling here. Not required since re-tries and on-device request caching are automatic
-										Log.v(tag, "GameCircle ERROR: " + result.getError());
-									} else {
-										Log.v(tag, "GameCircle OK");
-									}
-								}
-							});
+				if(AmazonGamesClient.getInstance() == null) {
+					Log.v(tag, "Not submitting GameCircle score because AmazonGamesClient instance was null");
+					return;
 				}
+				
+				Log.v(tag, "GameCircle submitScore " + leaderboardId + ' ' + score);
+				AmazonGamesClient.getInstance().getLeaderboardsClient().submitScore(leaderboardId, score, developerPayload).setCallback(new AGResponseCallback<SubmitScoreResponse>() {
+					@Override
+					public void onComplete(SubmitScoreResponse result) {
+						if (result.isError()) {
+							// Add optional error handling here. Not required since re-tries and on-device request caching are automatic
+							Log.v(tag, "GameCircle ERROR: " + result.getError());
+						} else {
+							Log.v(tag, "GameCircle OK");
+						}
+					}
+				});
 			}
 		});
 	}
@@ -224,10 +243,25 @@ public class GameCircle extends Extension {
 	public static void updateAchievement(final String achievementId, final float percentComplete, final String developerPayload) {
 		callbackHandler.post(new Runnable() {
 			public void run() {
+				if(AmazonGamesClient.getInstance() == null) {
+					Log.v(tag, "Not submitting GameCircle achievement because AmazonGamesClient instance was null");
+					return;
+				}
+				
 				Log.v(tag, "GameCircle updateAchievement " + achievementId);
+				AmazonGamesClient.getInstance().getAchievementsClient().updateProgress(achievementId, percentComplete, developerPayload);
+			}
+		});
+	}
+	
+	public static void setPopUpLocation(String location) {
+		Log.v(tag, "GameCircle setPopUpLocation to " + location);
+		preferredPopupLocation = PopUpLocation.getLocationFromString(location, PopUpLocation.BOTTOM_CENTER);
 
-				if (AmazonGamesClient.getInstance() != null) {
-					AmazonGamesClient.getInstance().getAchievementsClient().updateProgress(achievementId, percentComplete, developerPayload);
+		callbackHandler.post(new Runnable() {
+			public void run() {
+				if(AmazonGamesClient.getInstance() != null) {
+					AmazonGamesClient.getInstance().setPopUpLocation(preferredPopupLocation);
 				}
 			}
 		});

@@ -2,10 +2,10 @@
 	"name": "samcodes-gamecircle",
 	"url": "http://samcodes.co.uk/code/",
 	"license": "MIT",
-	"tags": ["amazon","gamecircle","leaderboards","achievements","android"],
+	"tags": ["amazon","gamecircle","leaderboards","achievements","android","game"],
 	"description": "Amazon GameCircle achievements and leaderboards for Kindle/Android",
-	"version": "1.0.3",
-	"releasenote": "Updated usage instructions and readme",
+	"version": "1.0.4",
+	"releasenote": "Customizable toast location, big internal rewrite",
 	"contributors": ["samcodes"],
 	"dependencies": {}
 }

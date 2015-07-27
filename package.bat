@@ -1,1 +1,1 @@
-zip -0r samcodes-gamecircle.zip dependencies extension haxelib.json include.xml README.md
+zip -0r samcodes-gamecircle.zip dependencies extension haxelib.json include.xml README.md CHANGELOG.md LICENSE
