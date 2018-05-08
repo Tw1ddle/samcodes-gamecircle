@@ -2,8 +2,8 @@ package extension.gamecircle;
 
 #if android
 
-import extension.gamecircle.gc.GameCircleListener;
-import extension.gamecircle.gc.GamesClient;
+import extension.gamecircle.GameCircleListener;
+import extension.gamecircle.GamesClient;
 import openfl.utils.JNI;
 
 class GameCircle {

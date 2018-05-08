@@ -1,4 +1,4 @@
-package extension.gamecircle.gc;
+package extension.gamecircle;
 
 #if android
 
