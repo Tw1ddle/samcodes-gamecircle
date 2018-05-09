@@ -2,7 +2,7 @@ package extension.gamecircle;
 
 #if android
 
-import openfl.utils.JNI;
+import lime.system.JNI;
 
 class GamesClient {
 	public function new() {
@@ -45,35 +45,35 @@ class GamesClient {
 		var packageName:String = "com/samcodes/gamecircle/GameCircle";
 		
 		if (is_signed_in == null) {
-			is_signed_in = openfl.utils.JNI.createStaticMethod(packageName, "isSignedIn", "()Z");
+			is_signed_in = JNI.createStaticMethod(packageName, "isSignedIn", "()Z");
 		}
 
 		if(update_achievement == null) {
-			update_achievement = openfl.utils.JNI.createStaticMethod(packageName, "updateAchievement", "(Ljava/lang/String;FLjava/lang/String;)V");
+			update_achievement = JNI.createStaticMethod(packageName, "updateAchievement", "(Ljava/lang/String;FLjava/lang/String;)V");
 		}
 
 		if(show_achievements == null) {
-			show_achievements = openfl.utils.JNI.createStaticMethod(packageName, "showAchievements", "()V");
+			show_achievements = JNI.createStaticMethod(packageName, "showAchievements", "()V");
 		}
 
 		if(submit_score == null) {
-			submit_score = openfl.utils.JNI.createStaticMethod(packageName, "submitScore", "(Ljava/lang/String;JLjava/lang/String;)V");
+			submit_score = JNI.createStaticMethod(packageName, "submitScore", "(Ljava/lang/String;JLjava/lang/String;)V");
 		}
 
 		if(show_leaderboard == null) {
-			show_leaderboard = openfl.utils.JNI.createStaticMethod(packageName, "showLeaderboard", "(Ljava/lang/String;)V");
+			show_leaderboard = JNI.createStaticMethod(packageName, "showLeaderboard", "(Ljava/lang/String;)V");
 		}
 
 		if(show_leaderboards == null) {
-			show_leaderboards = openfl.utils.JNI.createStaticMethod(packageName, "showLeaderboards", "()V");
+			show_leaderboards = JNI.createStaticMethod(packageName, "showLeaderboards", "()V");
 		}
 
 		if(show_sign_in_page == null) {
-			show_sign_in_page = openfl.utils.JNI.createStaticMethod(packageName, "showSignInPage", "()V");
+			show_sign_in_page = JNI.createStaticMethod(packageName, "showSignInPage", "()V");
 		}
 		
 		if(set_popup_location == null) {
-			set_popup_location = openfl.utils.JNI.createStaticMethod(packageName, "setPopUpLocation", "(Ljava/lang/String;)V");
+			set_popup_location = JNI.createStaticMethod(packageName, "setPopUpLocation", "(Ljava/lang/String;)V");
 		}
 	}
 

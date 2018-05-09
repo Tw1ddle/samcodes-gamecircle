@@ -4,7 +4,7 @@ package extension.gamecircle;
 
 import extension.gamecircle.GameCircleListener;
 import extension.gamecircle.GamesClient;
-import openfl.utils.JNI;
+import lime.system.JNI;
 
 class GameCircle {
 	public var games(default, null):GamesClient;
