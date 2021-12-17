@@ -2,6 +2,8 @@ Haxe GameCircle
 ==============
 Unofficial Amazon GameCircle 2.x leaderboards and achievements support for OpenFL Android target.
 
+*Deprecation note. GameCircle has been [deprecated](https://developer.amazon.com/docs/gamecircle/faq-gamecircle.html), and so are these Haxe support bindings.*
+
 ### Features ###
 
 Supports:
